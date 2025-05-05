@@ -1,13 +1,17 @@
 import DirectorCard from "@/components/directorcard"
-import { getAllDirectors } from "@/lib/data"
 import Link from "next/link"
 import useSWR from "swr"
 
-const fetcher = async () => await getAllDirectors()
+const fetcher = async (url) => {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error("Failed to fetch directors")
+    const directors = await res.json()
+    return directors
+}
 
 
 export default function DirectorsPage() {
-    const { data: directors, error, isLoading } = useSWR('directors', fetcher)
+    const { data: directors, error, isLoading } = useSWR(`${process.env.NEXT_PUBLIC_API_URL}/directors`, fetcher)
 
     console.log(directors);
 

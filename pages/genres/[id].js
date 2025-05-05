@@ -1,9 +1,8 @@
 import MovieCard from '@/components/moviecard'
-import { getAllMovies, getGenreById } from '@/lib/data'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-const GenreMovies = ({ filteredMovies, genre }) => {
+const GenreMovies = ({ movies, genre }) => {
     return (
         <>
             <div className="container mx-auto px-4 py-8">
@@ -11,14 +10,14 @@ const GenreMovies = ({ filteredMovies, genre }) => {
                 <br />
                 <br />
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {filteredMovies.map((movie) => (
-                        <Link href={`/movies/${movie.id}`} className='p-2 rounded hover:bg-gray-500'>
+                    {movies.map((movie) => (
+                        <Link key={movie.id} href={`/movies/${movie.id}`} className='p-2 rounded hover:bg-gray-500'>
                             <MovieCard key={movie.id} movie={movie} showDirector={false} />
                         </Link>
                     ))}
                 </div>
 
-                {filteredMovies.length === 0 && (
+                {movies.length === 0 && (
                     <div className="text-center py-12">
                         <p className="text-xl text-muted-foreground">No movies found for this genre.</p>
                     </div>
@@ -47,21 +46,32 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const genreId = context.params.id
-    const movies = await getAllMovies()
-    const genre = await getGenreById(genreId)
+    // const movies = await getAllMovies()
+
+    const moviesRes = await fetch(`${process.env.API_URL}/genres/${genreId}/movies`)
+    const genreRes = await fetch(`${process.env.API_URL}/genres/${genreId}`)
+    if (!moviesRes.ok || !genreRes.ok) {
+        return { notFound: true };
+    }
+
+    const movies = await moviesRes.json()
+    const genre = await genreRes.json()
+
+    // console.log(genre.name);
+    // console.log(movies);
+    // movies.map((m) => console.log(m));
+    // console.log(typeof (movies));
 
     if (!movies) {
         return {
             notFound: true
         }
     }
-    console.log(genre);
 
-    const filteredMovies = movies.filter(movie => movie.genreId === genre.id)
 
     return {
         props: {
-            filteredMovies,
+            movies,
             genre
         },
         revalidate: 3600,

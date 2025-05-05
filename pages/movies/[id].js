@@ -45,7 +45,11 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const id = context.params.id
-    const movie = await getMovieById(id)
+    // const movie = await getMovieById(id)
+    const movieRes = await fetch(`${process.env.API_URL}/movies/${id}`)
+    const movie = await movieRes.json()
+
+
     if (!movie) {
         return {
             notFound: true
