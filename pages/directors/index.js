@@ -37,9 +37,7 @@ export default function DirectorsPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {directors.map((director) => (
-                        <Link href={`/movies/1/${director.id}`} className='p-2 rounded hover:bg-gray-500'>
-                            <DirectorCard key={director.id} director={director} showDirector={true} />
-                        </Link>
+                        <DirectorCard key={director.id} director={director} showDirector={true} />
                     ))}
                 </div>
             </div>

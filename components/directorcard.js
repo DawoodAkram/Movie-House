@@ -14,7 +14,7 @@ const DirectorCard = ({ director, showDirector }) => {
     }, [])
 
     return (
-        <section className="relative border border-gray-500 p-6 rounded hover:text-black h-64 flex flex-col justify-between">
+        <section className="relative border border-gray-500 p-6 rounded h-64 flex flex-col justify-between">
             <div>
                 <div className="absolute top-2 left-2 text-sm text-gray-600">{director.id}</div>
                 <div className="text-lg font-semibold">{director.name}</div>

@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react"
-import { getAllMovies, getAllGenres } from "../../lib/data"
+// import { getAllMovies, getAllGenres } from "../../lib/data"
 import MovieCard from "../../components/moviecard"
 import GenreFilter from "@/components/genresfilter"
 import Link from "next/link"
@@ -10,7 +9,7 @@ export default function MoviesPage({ movies, genres, initialGenreId }) {
     const [selectedGenreId, setSelectedGenreId] = useState(initialGenreId || null)
 
     useEffect(() => {
-        setFilteredMovies(selectedGenreId ? movies.filter((movie) => movie.genreId === selectedGenreId) : movies)
+        setFilteredMovies(selectedGenreId ? movies.filter((movie) => movie.genre_id === selectedGenreId) : movies)
     }, [selectedGenreId, movies])
 
     return (
@@ -45,7 +44,13 @@ export default function MoviesPage({ movies, genres, initialGenreId }) {
 }
 
 export async function getStaticProps({ query }) {
-    const [movies, genres] = await Promise.all([getAllMovies(), getAllGenres()])
+
+    let movies = await fetch(`${process.env.API_URL}/movies`)
+    let genres = await fetch(`${process.env.API_URL}/genres`)
+
+    movies = await movies.json()
+    genres = await genres.json()
+
 
     return {
         props: {
